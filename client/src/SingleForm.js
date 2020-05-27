@@ -3,6 +3,7 @@ import axios from 'axios'
 
 function SingleForm(props) {
     const [ selectedFile, setFile ] = useState(null)
+    const [ pic, setPic ] = useState("")
 
     const Submit = (e) =>{
         e.preventDefault();                
@@ -15,7 +16,10 @@ function SingleForm(props) {
         }
 
         axios.post(props.url, formData, config)
-        .then((res)=> console.log(res.data))
+        .then((res)=> {
+            console.log(res.data);
+            setPic(res.data.url)
+        })
         .catch(err => console.log(err))
     }
 
@@ -48,6 +52,14 @@ function SingleForm(props) {
                     />
                 </form>
             </div>
+
+            { pic && 
+            <div className="container mb-2">
+                <div className="d-flex flex-column justify-content-center align-items-center">
+                    <img src={pic} alt="No image" width="200" height="200" className="mx-auto d-block" />
+                </div>
+            </div>
+            }
         </div>
     </div>
     )

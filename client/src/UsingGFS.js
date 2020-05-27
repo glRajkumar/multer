@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import axios from 'axios'
 
-function MultipleForm(props) {
+function UsingGFS() {
     const [ selectedFiles, setFiles ] = useState(null)
     const [ picsSrc, setPicsSrc ] = useState([])
     let m = []
@@ -20,26 +20,32 @@ function MultipleForm(props) {
         const formData = new FormData()
 
         for(const key of Object.keys(selectedFiles)){
-            formData.append("multiple", selectedFiles[key])
+            formData.append("gfs", selectedFiles[key])
         }
 
         const config = {
             header: { 'content-type': 'multipart/form-data' }
         }
 
-        axios.post(props.url, formData, config)
+        axios.post("/usinggfs", formData, config)
         .then((res)=> {
             console.log(res.data)
-            setPicsSrc(res.data.listUrl)
         })
         .catch(err => console.log(err))
+    }
+
+    const getMultipleImg = () => {
+        axios.get("/usinggfs")
+        .then((res)=>{
+            console.log(res.data);
+        })    
     }
     
     return (
         <div className="container mb-2">
         <div className="row">
             <div className="col-md-6 m-auto">
-                <h3 className="text-center display-4 my-4"> {props.Name} </h3>
+                <h3 className="text-center display-4 my-4"> Using GFS </h3>
                 <form className="form-group">
                     <div className="input-group mb-3">
                         <div className="custom-file">
@@ -53,7 +59,6 @@ function MultipleForm(props) {
                                 onChange={(e) => setFiles(e.target.files)}
                             />
                             <label htmlFor="file" className="custom-file-label">
-                              {/* also use m.toString() it will include , automatic */}
                               { selectedFiles ? m.join(" ,") : "Choose File" }  
                             </label>
                         </div>
@@ -65,6 +70,10 @@ function MultipleForm(props) {
                      onClick={Submit} 
                     />
                 </form>
+            </div>
+
+            <div className="container text-center">
+                <button className="btn btn-primary mb-1" onClick={getMultipleImg}>click me to get the image</button>
             </div>
 
             { picsSrc && 
@@ -84,4 +93,4 @@ function MultipleForm(props) {
     )
 }
 
-export default MultipleForm
+export default UsingGFS

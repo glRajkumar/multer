@@ -2,7 +2,9 @@ const mongoose = require('mongoose')
 
 const Image = mongoose.model('Image', {
     img : {
-        type : Array
+        data : Buffer,
+        contentType : String,
+        contentSize : Number
     }
 })
 
