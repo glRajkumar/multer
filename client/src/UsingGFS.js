@@ -1,15 +1,25 @@
 import React, { useState } from 'react'
 import axios from 'axios'
+import MultipleForm from './MultipleForm'
+import SingleForm from './SingleForm';
+import ProgressBar from './ProgressBar';
+import Img from './Img';
 
 function UsingGFS() {
+    const [ selectedFile, setFile ] = useState(null)
     const [ selectedFiles, setFiles ] = useState(null)
-    const [ picsSrc, setPicsSrc ] = useState([])
-    let m = []
+    const [ pic, setPic ] = useState(false)
+    const [ pics, setPics ] = useState(false)
+    const [ name, setName ] = useState("")
+    const [ names, setNames ] = useState("")
+    const [ progress, setProgress ] = useState(0)
+    const [ mprogress, setmProgress ] = useState(0)
+    let fileNnames = []
 
     const handleChange = async () => {
         if(selectedFiles){
             for(const key of Object.keys(selectedFiles)){
-                m.push(selectedFiles[key].name)
+                fileNnames.push(selectedFiles[key].name)
             }    
         }
     }
@@ -18,78 +28,109 @@ function UsingGFS() {
     const Submit = (e) =>{
         e.preventDefault();                
         const formData = new FormData()
-
-        for(const key of Object.keys(selectedFiles)){
-            formData.append("gfs", selectedFiles[key])
-        }
+     
+        formData.append("sin_gfs", selectedFile)
 
         const config = {
-            header: { 'content-type': 'multipart/form-data' }
+            header: { 'content-type': 'multipart/form-data' },
+            onUploadProgress : progEvent => {
+                let percent = Math.floor((progEvent.loaded * 100) / progEvent.total)
+                if (percent < 100) setProgress(percent)
+                if(percent === 100) setProgress(99) 
+            }
         }
 
-        axios.post("/usinggfs", formData, config)
+        axios.post("/usinggfs/single", formData, config)
         .then((res)=> {
-            console.log(res.data)
+            console.log(res.data);
+            setProgress(0)
+            setName(res.data.file.filename)
         })
         .catch(err => console.log(err))
     }
 
-    const getMultipleImg = () => {
-        axios.get("/usinggfs")
-        .then((res)=>{
-            console.log(res.data);
-        })    
+    const MuSubmit = (e) =>{
+        e.preventDefault();                
+        const formData = new FormData()
+
+        for(const key of Object.keys(selectedFiles)){
+            formData.append("mul_gfs", selectedFiles[key])
+        }
+
+        const config = {
+            header: { 'content-type': 'multipart/form-data' },
+            onUploadProgress : progEvent => {
+                let percent = Math.floor((progEvent.loaded * 100) / progEvent.total)
+                if (percent < 100) setmProgress(percent)
+                if(percent === 100) setmProgress(99) 
+            }
+        }
+
+        axios.post("/usinggfs/multiple", formData, config)
+        .then((res)=> {
+            console.log(res.data)
+            setmProgress(0)
+            let n = res.data.files.map((file)=> file.filename)
+            setNames(n)
+        })
+        .catch(err => console.log(err))
     }
-    
+
+    const getAllImg = () => {
+        axios.get("/usinggfs")
+        .then((res)=>{ console.log(res.data) })    
+    }
+
     return (
-        <div className="container mb-2">
-        <div className="row">
-            <div className="col-md-6 m-auto">
-                <h3 className="text-center display-4 my-4"> Using GFS </h3>
-                <form className="form-group">
-                    <div className="input-group mb-3">
-                        <div className="custom-file">
-                            <input 
-                                type="file"
-                                name="img" 
-                                id="file" 
-                                accept="image/*"
-                                multiple
-                                className="custom-file-input"
-                                onChange={(e) => setFiles(e.target.files)}
-                            />
-                            <label htmlFor="file" className="custom-file-label">
-                              { selectedFiles ? m.join(" ,") : "Choose File" }  
-                            </label>
-                        </div>
-                    </div>
-                    <input 
-                     type="button" 
-                     value="Submit" 
-                     className="btn btn-primary btn-block" 
-                     onClick={Submit} 
-                    />
-                </form>
+        <>
+            <div className="col-md-6 m-auto mb-2">
+                <h3 className="text-center display-4 my-4">Using GFS </h3>
             </div>
+
+            <hr />
+            <SingleForm  
+                OnChange={e => setFile(e.target.files[0])}
+                selectedFile={selectedFile}
+                Submit={Submit} 
+            />
+
+            { progress > 0 && <ProgressBar progress={progress} />}
 
             <div className="container text-center">
-                <button className="btn btn-primary mb-1" onClick={getMultipleImg}>click me to get the image</button>
+                <button 
+                 className="btn btn-primary mb-1"
+                 onClick={ ()=> setPic(true) }
+                >click me to get the image by name</button>
             </div>
 
-            { picsSrc && 
-            <>
-            { picsSrc.map((pic, i)=>(
-                <div key={i} className="container mb-2">
-                    <div className="d-flex flex-column justify-content-center align-items-center">
-                        <img src={pic} width="200" height="200" className="mx-auto d-block" />
-                    </div>
-                </div>
-              ))    
-            }
-            </>
-            }
-        </div>
-    </div>
+            { pic && <Img Src={`/usinggfs/image/${name}`} id="1" />}
+
+            <hr />
+
+            <MultipleForm
+                names={fileNnames}
+                OnChange={e => setFiles(e.target.files)}
+                selectedFiles={selectedFiles}
+                Submit={MuSubmit} 
+            />
+
+            { mprogress > 0 && <ProgressBar progress={mprogress} />}
+
+            <div className="container text-center">
+                <button 
+                 className="btn btn-primary mb-1" 
+                 onClick={ ()=> setPics(true) }
+                >click me to get multiple images in DB</button>
+            </div>
+
+            { pics && <>{ names.map((name, i)=>( <Img Src={`/usinggfs/image/${name}`} id={i} /> )) }</> }
+
+            <hr />
+
+            <div className="container text-center">
+                <button className="btn btn-primary mb-1" onClick={getAllImg}>click me to get all images in DB</button>
+            </div>
+    </>
     )
 }
 

@@ -1,45 +1,11 @@
-import React, { useState } from 'react'
-import axios from 'axios'
+import React from 'react'
 
 function MultipleForm(props) {
-    const [ selectedFiles, setFiles ] = useState(null)
-    const [ picsSrc, setPicsSrc ] = useState([])
-    let m = []
-
-    const handleChange = async () => {
-        if(selectedFiles){
-            for(const key of Object.keys(selectedFiles)){
-                m.push(selectedFiles[key].name)
-            }    
-        }
-    }
-    handleChange()
-
-    const Submit = (e) =>{
-        e.preventDefault();                
-        const formData = new FormData()
-
-        for(const key of Object.keys(selectedFiles)){
-            formData.append("multiple", selectedFiles[key])
-        }
-
-        const config = {
-            header: { 'content-type': 'multipart/form-data' }
-        }
-
-        axios.post(props.url, formData, config)
-        .then((res)=> {
-            console.log(res.data)
-            setPicsSrc(res.data.listUrl)
-        })
-        .catch(err => console.log(err))
-    }
-    
     return (
         <div className="container mb-2">
         <div className="row">
             <div className="col-md-6 m-auto">
-                <h3 className="text-center display-4 my-4"> {props.Name} </h3>
+                <h3 className="text-center display-4 my-4"> Multiple </h3>
                 <form className="form-group">
                     <div className="input-group mb-3">
                         <div className="custom-file">
@@ -50,11 +16,12 @@ function MultipleForm(props) {
                                 accept="image/*"
                                 multiple
                                 className="custom-file-input"
-                                onChange={(e) => setFiles(e.target.files)}
+                                onChange={props.OnChange}
                             />
                             <label htmlFor="file" className="custom-file-label">
-                              {/* also use m.toString() it will include , automatic */}
-                              { selectedFiles ? m.join(" ,") : "Choose File" }  
+                              {/* also use names.toString() it will include , automatic */}
+                              { props.names.length > 0 ? props.names.join(" ,") : "Choose File" }
+                              {/* { selectedFiles ? m.join(" ,") : "Choose File" }     */}
                             </label>
                         </div>
                     </div>
@@ -62,23 +29,10 @@ function MultipleForm(props) {
                      type="button" 
                      value="Submit" 
                      className="btn btn-primary btn-block" 
-                     onClick={Submit} 
+                     onClick={props.Submit} 
                     />
                 </form>
             </div>
-
-            { picsSrc && 
-            <>
-            { picsSrc.map((pic, i)=>(
-                <div key={i} className="container mb-2">
-                    <div className="d-flex flex-column justify-content-center align-items-center">
-                        <img src={pic} width="200" height="200" className="mx-auto d-block" />
-                    </div>
-                </div>
-              ))    
-            }
-            </>
-            }
         </div>
     </div>
     )

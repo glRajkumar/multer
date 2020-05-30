@@ -1,5 +1,9 @@
 import React, { useState } from 'react'
 import axios from 'axios'
+import ProgressBar from './ProgressBar';
+import Img from './Img';
+import SingleForm from './SingleForm';
+import MultipleForm from './MultipleForm'
 
 function SaveInDb() {
     const [ selectedFile, setFile ] = useState(null)
@@ -10,12 +14,12 @@ function SaveInDb() {
     const [ imgs, setImgs ] = useState("")
     const [ progress, setProgress ] = useState(0)
     const [ mprogress, setmProgress ] = useState(0)
-    let m = []
+    let names = []
 
     const handleChange = async () => {
         if(selectedFiles){
             for(const key of Object.keys(selectedFiles)){
-                m.push(selectedFiles[key].name)
+                names.push(selectedFiles[key].name)
             }    
         }
     }
@@ -39,13 +43,8 @@ function SaveInDb() {
             header: { 'content-type': 'multipart/form-data' },
             onUploadProgress : progEvent => {
                 let percent = Math.floor((progEvent.loaded * 100) / progEvent.total)
-                if (percent < 100) {
-                    setProgress(percent)
-                }
-                if(percent === 100){
-                    setProgress(99)
-                    console.log("i am 100 at onupload");
-                }
+                if (percent < 100) setProgress(percent)
+                if(percent === 100) setProgress(99) 
             }
         }
 
@@ -69,12 +68,8 @@ function SaveInDb() {
             header: { 'content-type': 'multipart/form-data' },
             onUploadProgress : progEvent => {
                 let percent = Math.floor((progEvent.loaded * 100) / progEvent.total)
-                if (percent < 100) {
-                    setmProgress(percent)
-                }
-                if(percent === 100){
-                    setmProgress(99)
-                }
+                if (percent < 100) setmProgress(percent)
+                if(percent === 100) setmProgress(99)
             }
         }
 
@@ -90,13 +85,8 @@ function SaveInDb() {
         const config = {
             onDownloadProgress : progEvent => {                
                 let percent = Math.floor((progEvent.loaded * 100) / progEvent.total)
-                if (percent < 100) {
-                    setProgress(percent)
-                }
-                if(percent === 100){
-                    setProgress(99)
-                    console.log("i am 100 at ondownload");
-                }
+                if (percent < 100) setProgress(percent)
+                if(percent === 100) setProgress(99)
             }
         }
 
@@ -123,136 +113,46 @@ function SaveInDb() {
     }
 
     return (
-        <>
-            <div className="col-md-6 m-auto mb-2">
-                <h3 className="text-center display-4 my-4">Save In Db</h3>
-            </div>
-
-            <hr />
-
-            <div className="container mb-2">
-            <div className="row">
-                <div className="col-md-6 m-auto">
-                    <h3 className="text-center display-4 my-4"> Single </h3>
-                    <form className="form-group">
-                        <div className="input-group mb-2">
-                            <div className="custom-file">
-                                <input 
-                                    type="file"
-                                    name="img" 
-                                    id="file" 
-                                    accept="image/*"
-                                    className="custom-file-input"
-                                    onChange={ e => setFile(e.target.files[0]) }
-                                />
-                                <label htmlFor="file" className="custom-file-label">
-                                { selectedFile ? `${selectedFile.name}` : "Choose File" }  
-                                </label>
-                            </div>
-                        </div>
-                        <input 
-                        type="button" 
-                        value="Submit" 
-                        className="btn btn-primary btn-block" 
-                        onClick={Submit} 
-                        />
-                    </form>
-                </div>
-
-                {progress > 0 && 
-                <div className="container mb-4">
-                <div className="progress">
-                    <div 
-                     className="progress-bar bg-success progress-bar-striped progress-bar-animated"
-                     role="progressbar"
-                     aria-valuenow={progress}
-                     aria-valuemin="0"
-                     aria-valuemax="100"
-                     style={{ width : progress + "%" }}
-                    >
-                        {progress} %
-                    </div>
-                </div>
-                </div>
-                }
-
-                <div className="container text-center">
-                   <button className="btn btn-primary mb-1" onClick={getSingleImg}>click me to get the image</button>
-                </div>
-
-                { img && 
-                    <div className="container text-center">
-                        <img src={img} width="200" height="200" />
-                    </div>
-                }
-            </div>
+    <>
+        <div className="col-md-6 m-auto mb-2">
+            <h3 className="text-center display-4 my-4">Save In Db</h3>
         </div>
 
-            <hr />
+        <hr />
 
-            <div className="container mb-2">
-            <div className="row">
-                <div className="col-md-6 m-auto">
-                    <h3 className="text-center display-4 my-4"> Multiple </h3>
-                    <form className="form-group">
-                        <div className="input-group mb-3">
-                            <div className="custom-file">
-                                <input 
-                                    type="file"
-                                    name="img" 
-                                    id="file" 
-                                    accept="image/*"
-                                    multiple
-                                    className="custom-file-input"
-                                    onChange={(e) => setFiles(e.target.files)}
-                                />
-                                <label htmlFor="file" className="custom-file-label">
-                                { selectedFiles ? m.join(" ,") : "Choose File" }  
-                                </label>
-                            </div>
-                        </div>
-                        <input 
-                        type="button" 
-                        value="Submit" 
-                        className="btn btn-primary btn-block" 
-                        onClick={MuSubmit} 
-                        />
-                    </form>
-                </div>
+        <SingleForm  
+            OnChange={e => setFile(e.target.files[0])}
+            selectedFile={selectedFile}
+            Submit={Submit} 
+        />
 
-                {mprogress > 0 && 
-                <div className="container mb-4">
-                <div className="progress">
-                    <div 
-                     className="progress-bar bg-success progress-bar-striped progress-bar-animated"
-                     role="progressbar"
-                     aria-valuenow={mprogress}
-                     aria-valuemin="0"
-                     aria-valuemax="100"
-                     style={{ width : mprogress + "%" }}
-                    >
-                        {mprogress} %
-                    </div>
-                </div>
-                </div>
-                }
+        { progress > 0 && <ProgressBar progress={progress} />}
 
-                <div className="container text-center">
-                   <button className="btn btn-primary mb-1" onClick={getMultipleImg}>click me to get the image</button>
-                </div>
-
-                {imgs && 
-                  imgs.map((img, i)=>(
-                    <div key={i} className="container mb-2">
-                    <div className="d-flex flex-column justify-content-center align-items-center">
-                        <img src={img} width="200" height="200" className="mx-auto d-block" />
-                    </div>
-                    </div>
-                  ))
-                }
-
-            </div>
+        <div className="container text-center">
+            <button className="btn btn-primary mb-1" onClick={getSingleImg}>click me to get the image</button>
         </div>
+
+        { img && <Img Src={img} id="1" /> }
+
+        <hr />
+
+        <MultipleForm
+            names={names}
+            OnChange={e => setFiles(e.target.files)}
+            selectedFiles={selectedFiles}
+            Submit={MuSubmit} 
+        />
+
+        { mprogress > 0 && <ProgressBar progress={mprogress} />}
+
+        { 
+            imgs && <> { imgs.map((img, i)=>( <Img Src={img} id={i} /> )) } </>
+        }
+
+        <div className="container text-center">
+            <button className="btn btn-primary mb-1" onClick={getMultipleImg}>click me to get the image</button>
+        </div>
+
         <hr />
     </>
     )
