@@ -57,7 +57,8 @@ function Multiple() {
             { progress > 0 && <ProgressBar progress={progress} />}
 
             { 
-              picsSrc && <> { picsSrc.map((pic, i)=>( <Img Src={pic} id={i} /> )) } </>
+              picsSrc && 
+              picsSrc.map((pic, i) =>( <React.Fragment key={i}><Img Src={pic} /> </React.Fragment> ))
             }
         </>
     ) 

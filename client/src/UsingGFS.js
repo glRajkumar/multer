@@ -82,54 +82,57 @@ function UsingGFS() {
     }
 
     return (
-        <>
-            <div className="col-md-6 m-auto mb-2">
-                <h3 className="text-center display-4 my-4">Using GFS </h3>
-            </div>
+    <>
+        <div className="col-md-6 m-auto mb-2">
+            <h3 className="text-center display-4 my-4">Using GFS </h3>
+        </div>
 
-            <hr />
-            <SingleForm  
-                OnChange={e => setFile(e.target.files[0])}
-                selectedFile={selectedFile}
-                Submit={Submit} 
-            />
+        <hr />
+        <SingleForm  
+            OnChange={e => setFile(e.target.files[0])}
+            selectedFile={selectedFile}
+            Submit={Submit} 
+        />
 
-            { progress > 0 && <ProgressBar progress={progress} />}
+        { progress > 0 && <ProgressBar progress={progress} />}
 
-            <div className="container text-center">
-                <button 
-                 className="btn btn-primary mb-1"
-                 onClick={ ()=> setPic(true) }
-                >click me to get the image by name</button>
-            </div>
+        <div className="container text-center">
+            <button 
+                className="btn btn-primary mb-1"
+                onClick={ ()=> setPic(true) }
+            >click me to get the image by name</button>
+        </div>
 
-            { pic && <Img Src={`/usinggfs/image/${name}`} id="1" />}
+        { pic && <Img Src={`/usinggfs/image/${name}`} />}
 
-            <hr />
+        <hr />
 
-            <MultipleForm
-                names={fileNnames}
-                OnChange={e => setFiles(e.target.files)}
-                selectedFiles={selectedFiles}
-                Submit={MuSubmit} 
-            />
+        <MultipleForm
+            names={fileNnames}
+            OnChange={e => setFiles(e.target.files)}
+            selectedFiles={selectedFiles}
+            Submit={MuSubmit} 
+        />
 
-            { mprogress > 0 && <ProgressBar progress={mprogress} />}
+        { mprogress > 0 && <ProgressBar progress={mprogress} />}
 
-            <div className="container text-center">
-                <button 
-                 className="btn btn-primary mb-1" 
-                 onClick={ ()=> setPics(true) }
-                >click me to get multiple images in DB</button>
-            </div>
+        <div className="container text-center">
+            <button 
+                className="btn btn-primary mb-1" 
+                onClick={ ()=> setPics(true) }
+            >click me to get multiple images in DB</button>
+        </div>
 
-            { pics && <>{ names.map((name, i)=>( <Img Src={`/usinggfs/image/${name}`} id={i} /> )) }</> }
+        {
+            pics && 
+            names.map((name, i)=>(<React.Fragment key={i}> <Img Src={`/usinggfs/image/${name}`} /> </React.Fragment>)) 
+        }
 
-            <hr />
+        <hr />
 
-            <div className="container text-center">
-                <button className="btn btn-primary mb-1" onClick={getAllImg}>click me to get all images in DB</button>
-            </div>
+        <div className="container text-center">
+            <button className="btn btn-primary mb-1" onClick={getAllImg}>click me to get all images in DB</button>
+        </div>
     </>
     )
 }

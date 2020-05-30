@@ -132,7 +132,7 @@ function SaveInDb() {
             <button className="btn btn-primary mb-1" onClick={getSingleImg}>click me to get the image</button>
         </div>
 
-        { img && <Img Src={img} id="1" /> }
+        { img && <Img Src={img} /> }
 
         <hr />
 
@@ -145,13 +145,14 @@ function SaveInDb() {
 
         { mprogress > 0 && <ProgressBar progress={mprogress} />}
 
-        { 
-            imgs && <> { imgs.map((img, i)=>( <Img Src={img} id={i} /> )) } </>
-        }
-
         <div className="container text-center">
             <button className="btn btn-primary mb-1" onClick={getMultipleImg}>click me to get the image</button>
         </div>
+
+        { 
+            imgs && 
+            imgs.map((img, i)=>( <React.Fragment key={i}> <Img Src={img} /> </React.Fragment> )) 
+        }
 
         <hr />
     </>

@@ -5,7 +5,7 @@ function ProgressBar({progress}) {
         <div className="container mb-4">
         <div className="progress">
             <div 
-             className="progress-bar bg-success progress-bar-striped progress-bar-animated"
+             className="progress-bar progress-bar-striped progress-bar-animated"
              role="progressbar"
              aria-valuenow={progress}
              aria-valuemin="0"

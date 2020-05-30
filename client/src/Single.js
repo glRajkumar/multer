@@ -43,7 +43,7 @@ function Single() {
 
         { progress > 0 && <ProgressBar progress={progress} />}
 
-        { pic && <Img Src={pic} id="1" />}
+        { pic && <Img Src={pic} />}
 
         </>
     )
