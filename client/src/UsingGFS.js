@@ -42,9 +42,8 @@ function UsingGFS() {
 
         axios.post("/usinggfs/single", formData, config)
         .then((res)=> {
-            console.log(res.data);
             setProgress(0)
-            setName(res.data.file.filename)
+            setName(res.data.fileName)
         })
         .catch(err => console.log(err))
     }
@@ -68,10 +67,8 @@ function UsingGFS() {
 
         axios.post("/usinggfs/multiple", formData, config)
         .then((res)=> {
-            console.log(res.data)
             setmProgress(0)
-            let n = res.data.files.map((file)=> file.filename)
-            setNames(n)
+            setNames(res.data.fileNames)
         })
         .catch(err => console.log(err))
     }
@@ -84,7 +81,7 @@ function UsingGFS() {
     return (
     <>
         <div className="col-md-6 m-auto mb-2">
-            <h3 className="text-center display-4 my-4">Using GFS </h3>
+            <h3 className="text-center display-4 my-4"> Using GFS </h3>
         </div>
 
         <hr />

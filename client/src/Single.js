@@ -26,7 +26,6 @@ function Single() {
 
         axios.post("/single", formData, config)
         .then((res)=> {
-            console.log(res.data);
             setProgress(0)
             setPic(res.data.url)
         })

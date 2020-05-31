@@ -38,7 +38,6 @@ function Multiple() {
 
         axios.post("/multiple", formData, config)
         .then((res)=> {
-            console.log(res.data)
             setProgress(0)
             setPicsSrc(res.data.listUrl)
         })

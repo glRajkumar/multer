@@ -82,15 +82,7 @@ function SaveInDb() {
     }
 
     const getSingleImg = () => {
-        const config = {
-            onDownloadProgress : progEvent => {                
-                let percent = Math.floor((progEvent.loaded * 100) / progEvent.total)
-                if (percent < 100) setProgress(percent)
-                if(percent === 100) setProgress(99)
-            }
-        }
-
-        axios.post(`/saveInDb/getsingle`, {id}, config)
+        axios.post(`/saveInDb/getsingle`, {id})
         .then((res)=>{
             setProgress(0)
             let base64Flag = `data:${res.data.img.contentType};base64,`
