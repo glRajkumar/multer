@@ -19,11 +19,13 @@ const single = require('./controllers/single')
 const multiple = require('./controllers/multiple')
 const saveInDb = require('./controllers/saveInDb')
 const usinggfs = require('./controllers/usingGfs')
+const usingGFBucket = require('./controllers/usingGFBucket')
 
 app.use("/single", single)
 app.use("/multiple", multiple)
 app.use("/saveInDb", saveInDb)
 app.use("/usinggfs", usinggfs)
+app.use("/bucket", usingGFBucket)
 
 app.use((req,res,next)=>{
     const error = new Error('Not Found')
